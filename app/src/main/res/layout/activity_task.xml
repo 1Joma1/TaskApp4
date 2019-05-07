@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <EditText
+        android:id="@+id/etTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Title"/>
+
+    <EditText
+        android:id="@+id/etDes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:onClick="onClickDate"
+            android:text="Date"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:onClick="onClickSave"
+            android:text="Save"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</LinearLayout>
