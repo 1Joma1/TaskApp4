@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,12 @@ import com.geektech.taskapp4.TaskActivity;
 import com.geektech.taskapp4.TaskAdapter;
 import com.geektech.taskapp4.room.Task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PlaceholderFragment extends Fragment {
 
@@ -59,11 +62,12 @@ public class PlaceholderFragment extends Fragment {
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         recyclerView = root.findViewById(R.id.my_recyclerView);
-        initList();
+        onChangeTab();
+        //initList();
         return root;
     }
 
-    public void initList() {
+    public void initList(final String date) {
         list = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         taskAdapter = new TaskAdapter(list);
@@ -72,7 +76,13 @@ public class PlaceholderFragment extends Fragment {
             @Override
             public void onChanged(@Nullable final List<Task> tasks) {
                 list.clear();
-                list.addAll(tasks);
+                for (Task t:tasks) {
+                    long time = t.getTime();
+                    String taskTime = longToString(time);
+                    if (taskTime.equals(date)){
+                        list.add(t);
+                    }
+                }
                 taskAdapter.notifyDataSetChanged();
             }
         });
@@ -91,6 +101,38 @@ public class PlaceholderFragment extends Fragment {
                 showAlert(task);
             }
         });
+    }
+
+    public void onChangeTab() {
+        pageViewModel.getText().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                switch (s) {
+                    case "1":
+                        initList(getCurrentDate(-1));
+                        break;
+                    case "2":
+                        initList(getCurrentDate(0));
+                        break;
+                    case "3":
+                        initList(getCurrentDate(1));
+                        break;
+                }
+            }
+        });
+    }
+
+    public String getCurrentDate(int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, day);
+        Date date = calendar.getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
+        return df.format(date);
+    }
+
+    public String longToString(long time){
+        return new SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                .format(new Date(time));
     }
 
     private void showAlert(final Task task) {
